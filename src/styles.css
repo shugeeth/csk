@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height + 15px, set the footer size to 60px in the footer css */
+  margin-bottom: 75px;
+}
+
+
