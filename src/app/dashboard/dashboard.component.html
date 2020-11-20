@@ -1,0 +1,20 @@
+<div class="container p-4">
+    <h4>Welcome {{ fellow.first_name }}  {{ fellow.last_name}}!
+      <span style="float: right;">{{ fellow.school_name }}</span>
+    </h4>
+    <h5 class="text-info text-center p-4">
+      <span class="text-danger" style="font-size: 2rem;">&hearts;&hearts;&hearts;</span>
+      &nbsp; A <span class="text-uppercase text-danger font-italic text-hearted"><strong>Heartful Thanks</strong></span> from the CSK team for taking the effort to register your students &nbsp;
+      <span class="text-danger" style="font-size: 2rem;">&hearts;&hearts;&hearts;</span>
+    </h5>
+    <hr>
+</div>
+
+<app-student-event-grid *ngIf="router === '/studentEvents'"></app-student-event-grid>
+<app-student-access-grid *ngIf="router === '/'"></app-student-access-grid>
+
+
+
+
+
+

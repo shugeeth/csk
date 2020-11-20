@@ -1,0 +1,26 @@
+<div class="container">
+    <form (submit)="onAccessFormSubmit()">
+      <table class="table">
+        <thead>
+          <tr class="text-uppercase">
+            <th scope="col">Student Name</th>
+            <th scope="col" class="text-center">Access</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students; let i = index;">
+            <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
+            <td class="text-center">
+              <input class="form-check-input td-checkbox" type="checkbox"
+              (change)="changeAccessCheckbox(i)"
+              [checked]="student.access">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-warning text-primary" [disabled]="!isDirtyFlag">
+        <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Access
+      </button>
+    </form>
+</div>
+

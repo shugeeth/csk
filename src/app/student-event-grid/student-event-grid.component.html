@@ -1,0 +1,46 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col-3">
+      <div class="form-group">
+        <label for="selectWeek">Select Week</label>
+        <select class="form-control" id="selectWeek" (change)="onWeekSelected()"
+        [(ngModel)]="selectedWeek" [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let week of weeks" [ngValue]="week.id">{{ week.value }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group">
+        <label for="selectMode">Select Mode</label>
+        <select class="form-control" id="selectMode" (change)="onModeSelected()"
+        [(ngModel)]="selectedMode" [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let mode of modes" [ngValue]="mode.id">{{ mode.value }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <form>
+    <table class="table">
+      <thead>
+        <tr class="text-uppercase">
+          <th  scope="col">Student Name</th>
+          <th class="text-center" scope="col" *ngFor="let event of filteredEvents">{{ event.event_name }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students">
+          <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
+          <td class="text-center" *ngFor="let event of filteredEvents">
+              <input class="form-check-input text-center td-checkbox" type="checkbox" value="event.event_id" (change)="onCheckboxChange(student.student_id, event.event_id, $event)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="submit" class="btn btn-success">
+      <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Events
+    </button>
+  </form>
+
+</div>

@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+  <a class="navbar-brand" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <img src="../assets/logo.png" width="120" height="120" class="" alt="">
+    <span style="font-size: 40px;">{{title}}</span>
+  </a>
+  <button class="navbar-toggler" *ngIf="fellow" (click)="isCollapsed = !isCollapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" [collapse]="isCollapsed" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" *ngIf="fellow">
+        <a class="nav-item nav-link" routerLink="/">StudentsAccess</a>
+      </li>
+      <li class="nav-item" *ngIf="fellow">
+        <a class="nav-item nav-link" routerLink="/studentEvents">StudentsEvents</a>
+      </li>
+      <li class="nav-item" *ngIf="fellow">
+        <a class="nav-item nav-link" routerLink="/reports">Reports</a>
+      </li>
+      <li class="nav-item ml-2" *ngIf="fellow">
+        <div class="btn-group" dropdown>
+          <button id="accounts" dropdownToggle type="button" class="btn btn-outline-primary dropdown-toggle"
+                  aria-controls="accounts-dropdown">
+            Account <span class="caret"></span>
+          </button>
+          <ul id="accounts-dropdown" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="accounts">
+            <li role="menuitem"><a class="dropdown-item" routerLink="/changePassword" >Change Password</a></li>
+            <li role="menuitem"><a class="dropdown-item" routerLink="/" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
