@@ -187,10 +187,25 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     this.alertService.clear();
 
     this.updateLocalStorage()
-    this.accountService.updateStudentsEvents(
-      this.studentEventMap.filter(x=>x.flag=="insert"),
-      this.studentEventMap.filter(x=>x.flag=="delete")
-    )
+
+    var insertRows = this.studentEventMap.filter(x=>x.flag="insert");
+    var deleteRows = this.studentEventMap.filter(x=>x.flag="delete");
+
+    //Removing unnecessary attributes for db update
+    insertRows = insertRows.filter(x=>{
+                      delete x.week;
+                      delete x.mode;
+                      delete x.flag;
+                      return true;
+                     });
+    deleteRows = deleteRows.filter(x=>{
+                      delete x.week;
+                      delete x.mode;
+                      delete x.flag;
+                      return true;
+                     });
+
+    this.accountService.updateStudentsEvents( insertRows, deleteRows)
     .pipe(first())
     .subscribe(
         data => {
@@ -207,9 +222,9 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
           this.setNoneFlagForAllSEMap();
         }
     );
-    this.loading = false;
-    this.studentEventMap = this.accountService.fellowValue.students_events_map;
-    this.setNoneFlagForAllSEMap();
+    // this.loading = false;
+    // this.studentEventMap = this.accountService.fellowValue.students_events_map;
+    // this.setNoneFlagForAllSEMap();
   }
 
   updateLocalStorage(){
