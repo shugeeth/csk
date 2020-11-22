@@ -1,149 +1,201 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { studentEventGrid } from "../core/models/student-events-info.model";
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
-import { AccountService } from '../services';
+import { AccountService, AlertService } from '../services';
 import { Fellow } from '../models';
 import { Students } from '../models/students';
 import { Events } from '../models/events';
+import { Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { StudentsEventsMap } from '../models/students_events_map';
 
 @Component({
   selector: 'app-student-event-grid',
   templateUrl: './student-event-grid.component.html',
   styleUrls: ['./student-event-grid.component.css']
 })
-export class StudentEventGridComponent implements OnInit {
+export class StudentEventGridComponent implements OnInit, AfterViewInit {
 
   fellow: Fellow;
   events: Events[];
-  students: Students[];
+  faCloudUploadAlt = faCloudUploadAlt;
+  dbOutput: any;
+  loading = false;
+  updateConfirmCheckFlag = false;
+  selectedWeek: any;
+  selectedMode: any;
+  filteredStudents: Students[];
+  filteredEvents: Events[];
+  studentEventMap: any;
+  // studentEventMap: { week: any; mode: any; student_id: number; event_id: number; flag: string }[];
 
-  constructor(private accountService: AccountService) {
-    this.filteredEvents = this.events;
+  updationDetails: studentEventGrid[] = [];
+  deletionDetails: studentEventGrid[] = [];
+
+  weeks = [
+    { display: "Week 1", value: "28-11-2020" },
+    { display: "Week 2", value:"05-12-2020" },
+    { display: "Week 3",value:"12-12-2020" },
+    { display: "Week 4" ,value:"19-12-2020"}
+  ];
+
+  modes = [
+    { value: "ONLINE" },
+    { value: "CONFERENCE CALL" },
+    { value: "OFFLINE" }
+  ];
+
+  constructor(
+    private accountService: AccountService,
+    private alertService: AlertService,
+    private router: Router
+  ){
     this.fellow = this.accountService.fellowValue;
-    this.students =  this.fellow.students;
     this.events = this.fellow.events;
-    this.selectedMode = "1";
-    this.selectedWeek = "1";
-    this.filteredEvents = this.getEventsFilter();//this.events.filter(t=>t ==this.selectedMode);
-    console.log(this.filteredEvents);
-  }
-  // getFilterByMode(){
-  // var index= Number(this.selectedMode) -1;
-  // return this.events.filter((event) => event["mode"] === this.modes[index].value);
-  // }
-  getEventsFilter(){
-    return this.events.filter((event) => {
-      switch (Number(this.selectedWeek)) {
-        case 1:
-            console.log("Week 1");
-            var tempDay = String(event["event_date"]).substr(0,2);
-            var index= Number(this.selectedMode) -1;
-            return Number(tempDay) == 28 && event["mode"] === this.modes[index].value;
-            break;
-        case 2:
-            console.log("Week 2");
-            var tempDay = String(event["event_date"]).substr(0,2);
-            var index= Number(this.selectedMode) -1;
-            return Number(tempDay) == 5 && event["mode"] === this.modes[index].value;
-            break;
-        case 3:
-            console.log("Week 3");
-            var tempDay = String(event["event_date"]).substr(0,2);
-            var index= Number(this.selectedMode) -1;
-            return Number(tempDay) == 12 && event["mode"] === this.modes[index].value;
-            break;
-        case 4:
-            console.log("Week 4");
-            var tempDay = String(event["event_date"]).substr(0,2);
-            var index= Number(this.selectedMode) -1;
-            return Number(tempDay) == 19 && event["mode"] === this.modes[index].value;
-            break;
-      }
-      // var index= Number(this.selectedMode) -1;
-      // if(event["event_date"] == this.modes[index].value){
-      //   return event;
-      // }
-  })
+    this.selectedMode = "ONLINE";
+    this.selectedWeek = "28-11-2020";
+    this.getStudentsFiltered();
+    this.getEventsFiltered();
+    this.studentEventMap = this.accountService.fellowValue.students_events_map;
+
+    //Add a flag field to the studentEventMap
+    //studentEventMap flag will initially be 'none'and will change to 'insert'/'delete' for update in localstorage and DB
+    this.studentEventMap.forEach((semap) => {
+      semap.flag = "none";
+    })
+
   }
 
   ngOnInit(): void {
   }
 
-  faCloudUploadAlt = faCloudUploadAlt;
-  selectedWeek: any;
-  selectedMode: any;
-  filteredWeek: any;
-  filteredEvents: any;
-  updationDetails: studentEventGrid[] = [];
-
-  weeks = [
-    { value: "Week 1", id: "1" },
-    { value: "Week 2", id:"2" },
-    { value: "Week 3",id:"3" },
-    { value: "Week 4" ,id:"4"}
-  ];
-
-  modes = [
-    { value: "ONLINE", id: "1" },
-    { value: "CONFERENCE CALL", id:"2" },
-    { value: "OFFLINE",id:"3" }
-  ];
-
-  // events = [
-  //   { value: "Marathon", id: "1" },
-  //   { value: "Dancing", id:"2" },
-  //   { value: "Singing",id:"3" },
-  //   { value: "Painting" ,id:"4"},
-  //   { value: "Fancy Dress",id:"5" },
-  //   ];
-
-  // students = [
-  //   { value: "Akash", id: "1" },
-  //   { value: "Bindhu", id:"2" },
-  //   { value: "Catherine",id:"3" },
-  //   { value: "David" ,id:"4"},
-  //   { value: "Eliza",id:"5" },
-  //   ];
-
-  onWeekSelected(){
-    console.log(this.selectedWeek);
-    this.filteredWeek = this.weeks.filter(t=>t==this.selectedWeek);
-    this.filteredEvents = this.getEventsFilter();
-    console.log(this.filteredEvents);
+  ngAfterViewInit() {
+    this.filteredStudents.forEach((student) => {
+      this.filteredEvents.forEach((event) => {
+        this.mapCheckboxCheckedProperty(student.student_id, event.event_id)
+      })
+    })
   }
 
-  onModeSelected(){
-    console.log(this.selectedMode);
-    this.filteredEvents = this.getEventsFilter();
-    console.log(this.filteredEvents);
+  getEventsFiltered(){
+    this.filteredEvents = this.events.filter((event) => {
+      return event.event_date == this.selectedWeek &&
+      event.mode == this.selectedMode;
+    });
   }
 
-  onCheckboxChange(studentId: number, eventId: number, event: any){
+  getStudentsFiltered(){ //Check access flag if Mode is ONLINE
+    if(this.selectedMode == "ONLINE"){
+      this.filteredStudents =  this.fellow.students.filter(x=>x.access == true)
+    }else{
+      this.filteredStudents = this.fellow.students;
+    }
+  }
 
+  onWeekChange(){
+    this.getEventsFiltered()
+    //console.log(this.filteredEvents);
+  }
+
+  onModeChange(){
+    this.getStudentsFiltered();
+    this.getEventsFiltered();
+    //console.log(this.filteredEvents);
+  }
+
+  mapCheckboxCheckedProperty(studentId: number, eventId: number){
+    var record = this.studentEventMap.filter((x: any)=>{
+      return (x.week == this.selectedWeek &&
+             x.mode == this.selectedMode &&
+             x.student_id == studentId &&
+             x.event_id == eventId)
+    });
+    if(record.length>0)
+      return true;
+    else
+      return false;
+  }
+
+  onMapCheckboxChange(studentId: number, eventId: number, event: any){
+    //studentEventMap: { week: any; mode: any; student_id: number; event_id: number; flag: string }[]
     // Find index of student when there is a change in checkbox
-    var stuIndex = this.updationDetails.findIndex(obj => obj.id == studentId);
+    var stuIndex = this.studentEventMap.findIndex(x => {
+      return x.student_id == studentId &&
+              x.event_id == eventId &&
+              x.mode == this.selectedMode &&
+              x.week == this.selectedWeek
+    });
 
-    if(event.target.checked){
-      //Logic to add entry from student event grid checkbox
-      if(stuIndex!=-1){
-        if(this.updationDetails[stuIndex].events.length>=3){
-          event.target.checked = false;
-        }
-        else{
-          this.updationDetails[stuIndex].events.push(eventId);
+    if(event.target.checked){ //if the chcekbox was turned from false to true
+      if(stuIndex!=-1){  //Logic if record in instudentEventMap
+        if(this.studentEventMap[stuIndex].flag=="none"){
+          this.studentEventMap[stuIndex].flag="insert";
+        }else if(this.studentEventMap[stuIndex].flag=="delete"){
+          this.studentEventMap[stuIndex].flag="none";
         }
       }
       else{
-        this.updationDetails.push({ id: studentId, events:[eventId] });
+        this.studentEventMap.push({
+          week: this.selectedWeek,
+          mode: this.selectedMode,
+          student_id: studentId,
+          event_id: eventId,
+          flag: "insert"
+        });
       }
     }
-    else{
-      // Remove event array element while unchecked
-      var eveIndex = this.updationDetails[stuIndex].events.findIndex((obj => obj == eventId));
-      this.updationDetails[stuIndex].events.splice(eveIndex,1); // Remove one element from the index
-    }
-    console.dir(this.updationDetails);
+    else{//if the checkbox was turned from true to false
+      if(stuIndex!=-1){  //Logic if record in instudentEventMap
+        if(this.studentEventMap[stuIndex].flag=="none"){
+          this.studentEventMap[stuIndex].flag="delete";
+        }else if(this.studentEventMap[stuIndex].flag=="insert"){
+          //Check if record is there in local storage
+          var seMapIndex = JSON.parse(localStorage.getItem("fellow")).students_events_map.findIndex(x => {
+            return x.student_id == studentId &&
+                    x.event_id == eventId &&
+                    x.mode == this.selectedMode &&
+                    x.week == this.selectedWeek
+          });
 
+          if(seMapIndex!=-1){ //if record in Local Storage
+            this.studentEventMap[stuIndex].flag="delete";
+          }
+          else{
+            //Remove current record from the StudentEventMap
+            this.studentEventMap.splice(stuIndex,1);
+          }
+        }
+      }
+    }
+    console.dir(this.studentEventMap);
+  }
+
+
+  onConfirmCheckboxChange(){
+    this.updateConfirmCheckFlag = !this.updateConfirmCheckFlag;
+  }
+
+  onStuEventFormSubmit(){
+
+    this.loading = true;
+    // reset alerts on submit
+    this.alertService.clear();
+
+
+    // this.accountService.updateStudentEvent()
+    // .pipe(first())
+    // .subscribe(
+    //     data => {
+    //       this.dbOutput = data;
+    //       this.alertService.success(this.dbOutput.message);
+    //       this.loading = false;
+    //       this.router.navigate(['/']);
+    //     },
+    //     error => {
+    //         this.alertService.error(error);
+    //         this.loading = false;
+    //     }
+    // );
   }
 
 }

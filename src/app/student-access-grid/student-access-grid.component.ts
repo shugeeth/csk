@@ -17,7 +17,6 @@ export class StudentAccessGridComponent implements OnInit {
   faCloudUploadAlt = faCloudUploadAlt;
   students:Students[];
   loading = false;
-  submitted = false;
   isDirtyFlag = false;
   dbOutput: any;
 
@@ -50,7 +49,6 @@ export class StudentAccessGridComponent implements OnInit {
 
   onAccessFormSubmit(){
 
-    this.submitted = true;
     this.loading = true;
     // reset alerts on submit
     this.alertService.clear();
@@ -61,12 +59,14 @@ export class StudentAccessGridComponent implements OnInit {
           data => {
             this.dbOutput = data;
             this.alertService.success(this.dbOutput.message);
+            this.loading = false;
+            this.isDirtyFlag = false;
             this.router.navigate(['/']);
           },
           error => {
               this.alertService.error(error);
               this.loading = false;
-              this.submitted = false;
+              this.isDirtyFlag = false;
           }
       );
   }

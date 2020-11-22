@@ -1,3 +1,9 @@
 .td-checkbox{
   margin-left: 3rem;
 }
+.form-check-label {
+  padding-left: 1rem;
+}
+.badge.badge-info{
+  font-size: medium;
+}

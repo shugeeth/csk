@@ -1,21 +1,21 @@
 <div class="container">
 
   <div class="row">
-    <div class="col-3">
+    <div class="col-4">
       <div class="form-group">
-        <label for="selectWeek">Select Week</label>
-        <select class="form-control" id="selectWeek" (change)="onWeekSelected()"
+        <label for="selectWeek" class="badge badge-info badge-pill">&nbsp;&nbsp;Selected Week - {{ selectedWeek }}&nbsp;&nbsp;</label>
+        <select class="form-control" id="selectWeek" (change)="onWeekChange()"
         [(ngModel)]="selectedWeek" [ngModelOptions]="{standalone: true}">
-          <option *ngFor="let week of weeks" [ngValue]="week.id">{{ week.value }}</option>
+          <option *ngFor="let week of weeks" [ngValue]="week.value">{{ week.display }}</option>
         </select>
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-4">
       <div class="form-group">
-        <label for="selectMode">Select Mode</label>
-        <select class="form-control" id="selectMode" (change)="onModeSelected()"
+        <label for="selectMode" class="badge badge-info badge-pill">&nbsp;&nbsp;Selected Mode - {{ selectedMode }}&nbsp;&nbsp;</label>
+        <select class="form-control" id="selectMode" (change)="onModeChange()"
         [(ngModel)]="selectedMode" [ngModelOptions]="{standalone: true}">
-          <option *ngFor="let mode of modes" [ngValue]="mode.id">{{ mode.value }}</option>
+          <option *ngFor="let mode of modes" [ngValue]="mode.value">{{ mode.value }}</option>
         </select>
       </div>
     </div>
@@ -30,17 +30,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let student of students">
+        <tr *ngFor="let student of filteredStudents">
           <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
           <td class="text-center" *ngFor="let event of filteredEvents">
-              <input class="form-check-input text-center td-checkbox" type="checkbox" value="event.event_id" (change)="onCheckboxChange(student.student_id, event.event_id, $event)">
+              <input class="form-check-input text-center td-checkbox" [checked]="mapCheckboxCheckedProperty(student.student_id, event.event_id)" type="checkbox" (change)="onMapCheckboxChange(student.student_id, event.event_id, $event)">
           </td>
         </tr>
       </tbody>
     </table>
-    <button type="submit" class="btn btn-success">
-      <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Events
-    </button>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input td-checkbox" [checked]="updateConfirmCheckFlag" (change)="onConfirmCheckboxChange()" id="updateConfirmCheck">
+      <label class="form-check-label text-info" for="updateConfirmCheck">
+        I understand that I am registering my students for
+        <span class="badge badge-info badge-pill">&nbsp;&nbsp;{{ selectedMode }} events on {{ selectedWeek }}&nbsp;&nbsp;</span>.
+      </label>
+    </div>
+    <span >
+      <button tooltip="Confirm the above checkbox to Enable Button" placement="right" triggers="pointerenter:pointerout" type="submit" class="btn btn-success" [disabled]="!updateConfirmCheckFlag || loading" >
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Events
+      </button>
+    </span>
   </form>
 
 </div>

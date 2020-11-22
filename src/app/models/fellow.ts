@@ -1,5 +1,6 @@
 import { Events } from './events';
 import { Students } from './students';
+import { StudentsEventsMap } from './students_events_map';
 
 export class Fellow {
   fellow_id: number;
@@ -11,4 +12,5 @@ export class Fellow {
   token: string;
   students:Students[];
   events:Events[];
+  students_events_map: StudentsEventsMap[];
 }
