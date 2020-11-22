@@ -44,6 +44,15 @@ export class AccountService {
         }));
   }
 
+  updateStudentsEvents(insertRows, deleteRows) {
+    return this.http.put(`${environment.apiUrl}/api/updateStudentsEvents`, { insertRows : insertRows, deleteRows: deleteRows})
+        .pipe(map((res:any) => {
+          return res;
+        }), catchError(er=>{
+          return throwError("Error in API");
+        }));
+  }
+
   changePassword(password){
     // const headers = new Headers({
     //   'Content-Type': 'application/json',

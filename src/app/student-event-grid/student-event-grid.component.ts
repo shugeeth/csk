@@ -50,6 +50,7 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     private alertService: AlertService,
     private router: Router
   ){
+
     this.fellow = this.accountService.fellowValue;
     this.events = this.fellow.events;
     this.selectedMode = "ONLINE";
@@ -58,11 +59,8 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     this.getEventsFiltered();
     this.studentEventMap = this.accountService.fellowValue.students_events_map;
 
-    //Add a flag field to the studentEventMap
     //studentEventMap flag will initially be 'none'and will change to 'insert'/'delete' for update in localstorage and DB
-    this.studentEventMap.forEach((semap) => {
-      semap.flag = "none";
-    })
+    this.setNoneFlagForAllSEMap();
 
   }
 
@@ -90,6 +88,13 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     }else{
       this.filteredStudents = this.fellow.students;
     }
+  }
+
+  setNoneFlagForAllSEMap(){
+    //Add a flag field to the studentEventMap
+    this.studentEventMap.forEach((semap) => {
+      semap.flag = "none";
+    })
   }
 
   onWeekChange(){
@@ -181,21 +186,58 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     // reset alerts on submit
     this.alertService.clear();
 
+    this.updateLocalStorage()
+    this.accountService.updateStudentsEvents(
+      this.studentEventMap.filter(x=>x.flag=="insert"),
+      this.studentEventMap.filter(x=>x.flag=="delete")
+    )
+    .pipe(first())
+    .subscribe(
+        data => {
+          this.dbOutput = data;
+          this.alertService.success(this.dbOutput.message);
+          this.loading = false;
+          this.studentEventMap = this.accountService.fellowValue.students_events_map;
+          this.setNoneFlagForAllSEMap();
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+          this.studentEventMap = this.accountService.fellowValue.students_events_map;
+          this.setNoneFlagForAllSEMap();
+        }
+    );
+    this.loading = false;
+    this.studentEventMap = this.accountService.fellowValue.students_events_map;
+    this.setNoneFlagForAllSEMap();
+  }
 
-    // this.accountService.updateStudentEvent()
-    // .pipe(first())
-    // .subscribe(
-    //     data => {
-    //       this.dbOutput = data;
-    //       this.alertService.success(this.dbOutput.message);
-    //       this.loading = false;
-    //       this.router.navigate(['/']);
-    //     },
-    //     error => {
-    //         this.alertService.error(error);
-    //         this.loading = false;
-    //     }
-    // );
+  updateLocalStorage(){
+    //Receive component copy of local storage
+    var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+    this.studentEventMap.forEach(element => {
+      if(element.flag=="insert"){
+        fellowFromLocalStorage.students_events_map.push({
+          week: element.week,
+          mode: element.mode,
+          student_id: element.student_id,
+          event_id: element.event_id
+        });
+      }
+      else if(element.flag=="delete"){
+        //Find index of record in local storage
+        var seMapIndex = fellowFromLocalStorage.students_events_map.findIndex(x => {
+          return x.student_id == element.student_id &&
+                  x.event_id == element.event_id &&
+                  x.mode == element.mode &&
+                  x.week == element.week
+        });
+        //Remove that element from local storage through splicing
+        fellowFromLocalStorage.students_events_map.splice(seMapIndex,1);
+      }
+    });
+    //Update local storage to component copy
+    localStorage.setItem("fellow",JSON.stringify(fellowFromLocalStorage));
   }
 
 }
