@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { studentEventGrid } from "../core/models/student-events-info.model";
-import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faHandPointRight } from '@fortawesome/free-solid-svg-icons';
 import { AccountService, AlertService } from '../services';
 import { Fellow } from '../models';
 import { Students } from '../models/students';
@@ -19,6 +19,7 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
   fellow: Fellow;
   events: Events[];
   faCloudUploadAlt = faCloudUploadAlt;
+  faHandPointRight = faHandPointRight;
   dbOutput: any;
   loading = false;
   updateConfirmCheckFlag = false;
@@ -26,7 +27,7 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
   selectedMode: any;
   filteredStudents: Students[];
   filteredEvents: Events[];
-  studentEventMap: any;
+  studentEventMap: any[];
   // studentEventMap: { week: any; mode: any; student_id: number; event_id: number; flag: string }[];
   insertRows: any[];
   deleteRows: any[];
@@ -221,7 +222,14 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
       .subscribe(
           data => {
             this.updateLocalStorage();
-            this.studentEventMap = this.accountService.fellowValue.students_events_map;
+            this.studentEventMap = [];
+            var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+            this.studentEventMap = fellowFromLocalStorage.students_events_map;
+            // JSON.parse(localStorage.getItem("fellow")).forEach(element => {
+            //   this.studentEventMap.push(
+            //     Object.assign({}, element)
+            //   )
+            // });
             this.setNoneFlagForAllSEMap();
             this.ngAfterViewChecked();
             this.dbOutput = data;
@@ -235,12 +243,15 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
           () => { //Operations to be done at final (no matter data or error)
             this.insertRows=[];
             this.deleteRows=[];
+            this.onConfirmCheckboxChange();
+            window.scroll(0,0);
           }
       );
     }
     else{
       this.alertService.error("No Change Detected. No Records Updated");
       this.loading = false;
+      window.scroll(0,0);
     }
 
     // this.loading = false;

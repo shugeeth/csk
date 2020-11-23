@@ -20,7 +20,9 @@
       </div>
     </div>
   </div>
-
+  <div class="col-12 mb-3" *ngIf="selectedMode=='ONLINE'">
+    <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For ONLINE Mode - Please give access to students in <a routerLink="/">Student Access</a> tab and update to list them here</span>
+  </div>
   <form (submit)="onStuEventFormSubmit()">
     <table class="table">
       <thead>
