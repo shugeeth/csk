@@ -67,6 +67,9 @@ export class StudentAccessGridComponent implements OnInit {
               this.alertService.error(error);
               this.loading = false;
               this.isDirtyFlag = false;
+          },
+          () => { //Operations to be done at final (no matter data or error)
+            window.scroll(0,0);
           }
       );
   }
