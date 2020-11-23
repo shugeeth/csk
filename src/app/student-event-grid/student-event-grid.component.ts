@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { studentEventGrid } from "../core/models/student-events-info.model";
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { AccountService, AlertService } from '../services';
@@ -14,7 +14,7 @@ import { StudentsEventsMap } from '../models/students_events_map';
   templateUrl: './student-event-grid.component.html',
   styleUrls: ['./student-event-grid.component.css']
 })
-export class StudentEventGridComponent implements OnInit, AfterViewInit {
+export class StudentEventGridComponent implements OnInit, AfterViewChecked {
 
   fellow: Fellow;
   events: Events[];
@@ -28,9 +28,8 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
   filteredEvents: Events[];
   studentEventMap: any;
   // studentEventMap: { week: any; mode: any; student_id: number; event_id: number; flag: string }[];
-
-  updationDetails: studentEventGrid[] = [];
-  deletionDetails: studentEventGrid[] = [];
+  insertRows: any[];
+  deleteRows: any[];
 
   weeks = [
     { display: "Week 1", value: "28-11-2020" },
@@ -58,16 +57,16 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     this.getStudentsFiltered();
     this.getEventsFiltered();
     this.studentEventMap = this.accountService.fellowValue.students_events_map;
-
     //studentEventMap flag will initially be 'none'and will change to 'insert'/'delete' for update in localstorage and DB
     this.setNoneFlagForAllSEMap();
-
+    this.insertRows=[];
+    this.deleteRows=[];
   }
 
   ngOnInit(): void {
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked() {
     this.filteredStudents.forEach((student) => {
       this.filteredEvents.forEach((event) => {
         this.mapCheckboxCheckedProperty(student.student_id, event.event_id)
@@ -186,42 +185,64 @@ export class StudentEventGridComponent implements OnInit, AfterViewInit {
     // reset alerts on submit
     this.alertService.clear();
 
-    this.updateLocalStorage()
+    // var insertRows = Object.assign({},this.studentEventMap);
+    // var deleteRows = Object.assign({},this.studentEventMap);
 
-    var insertRows = this.studentEventMap.filter(x=>x.flag="insert");
-    var deleteRows = this.studentEventMap.filter(x=>x.flag="delete");
+    this.studentEventMap.forEach(element => {
+      this.insertRows.push(
+        Object.assign({}, element)
+      )
+      this.deleteRows.push(
+        Object.assign({}, element)
+      )
+    });
+
+    //Preparing data to insert and delete in DB
+    this.insertRows = this.insertRows.filter(x=>x.flag=="insert");
+    this.deleteRows = this.deleteRows.filter(x=>x.flag=="delete");
 
     //Removing unnecessary attributes for db update
-    insertRows = insertRows.filter(x=>{
+    this.insertRows = this.insertRows.filter(x=>{
                       delete x.week;
                       delete x.mode;
                       delete x.flag;
                       return true;
                      });
-    deleteRows = deleteRows.filter(x=>{
+    this.deleteRows = this.deleteRows.filter(x=>{
                       delete x.week;
                       delete x.mode;
                       delete x.flag;
                       return true;
                      });
 
-    this.accountService.updateStudentsEvents( insertRows, deleteRows)
-    .pipe(first())
-    .subscribe(
-        data => {
-          this.dbOutput = data;
-          this.alertService.success(this.dbOutput.message);
-          this.loading = false;
-          this.studentEventMap = this.accountService.fellowValue.students_events_map;
-          this.setNoneFlagForAllSEMap();
-        },
-        error => {
-          this.alertService.error(error);
-          this.loading = false;
-          this.studentEventMap = this.accountService.fellowValue.students_events_map;
-          this.setNoneFlagForAllSEMap();
-        }
-    );
+    if(!(this.insertRows.length==0 && this.deleteRows.length==0)){ //Dont call DB if both insert and delete arrays are empty
+      this.accountService.updateStudentsEvents( this.insertRows, this.deleteRows)
+      .pipe(first())
+      .subscribe(
+          data => {
+            this.updateLocalStorage();
+            this.studentEventMap = this.accountService.fellowValue.students_events_map;
+            this.setNoneFlagForAllSEMap();
+            this.ngAfterViewChecked();
+            this.dbOutput = data;
+            this.alertService.success(this.dbOutput.message);
+            this.loading = false;
+          },
+          error => {
+            this.alertService.error(error);
+            this.loading = false;
+          },
+          () => { //Operations to be done at final (no matter data or error)
+            this.insertRows=[];
+            this.deleteRows=[];
+          }
+      );
+    }
+    else{
+      this.alertService.error("No Change Detected. No Records Updated");
+      this.loading = false;
+    }
+
     // this.loading = false;
     // this.studentEventMap = this.accountService.fellowValue.students_events_map;
     // this.setNoneFlagForAllSEMap();
