@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  title = 'Chennai Students Kondattam V7.0';
+  title = 'Chennai Students Kondattam 7.V';
   isCollapsed = true;
   fellow:Fellow;
   isFellow=false;
