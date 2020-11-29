@@ -7,3 +7,25 @@
 .badge.badge-info{
   font-size: medium;
 }
+.custom-scrollbar {
+  --scrollbar-color: rgb(255, 1, 1);
+  --scrollbar-container-color: rgb(66, 51, 207);
+  --scrollbar-thumb-color: rgba(29, 9, 9, 0.815);
+  --scrollbar-thumb-hover-color: rgb(0, 0, 0);
+  --scrollbar-border-radius: 10px;
+  --scrollbar-size: 10px;
+  --scrollbar-padding: 8px;
+  --scroll-view-margin: 0;
+  --scroll-view-color: rgb(255, 1, 1);
+}
+/* .tbody-div{
+  overflow-y: auto;
+  max-height: 200px;
+} */
+/* tbody.table-striped>tr:nth-child(odd) {
+  background-color: #404040;
+} */
+
+/* .data-body-grid>tr.table-info:hover>td, {
+  background-color: #7e6e39;
+} */

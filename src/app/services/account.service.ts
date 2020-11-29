@@ -35,8 +35,8 @@ export class AccountService {
           }));
   }
 
-  updateStudentAccess() {
-    return this.http.put(`${environment.apiUrl}/api/updateStudentAccess`, { students : this.fellowValue.students })
+  updateStudentAccess(students) {
+    return this.http.put(`${environment.apiUrl}/api/updateStudentAccess`, { students : students })
         .pipe(map((res:any) => {
           return res;
         }), catchError(er=>{

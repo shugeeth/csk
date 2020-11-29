@@ -30,23 +30,28 @@
     <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For {{ this.selectedMode }} Mode - All students can participate in a maximum of 2 OFFLINE events.</span>
   </div>
   <form (submit)="onStuEventFormSubmit()">
-    <table class="table">
-      <thead>
-        <tr class="text-uppercase">
-          <th  scope="col">Student Name</th>
-          <th class="text-center" scope="col" *ngFor="let event of filteredEvents">{{ event.event_name }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let student of filteredStudents">
-          <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
-          <td class="text-center" *ngFor="let event of filteredEvents">
-              <input class="form-check-input text-center td-checkbox" [checked]="mapCheckboxCheckedProperty(student.student_id, event.event_id)" type="checkbox" (change)="onMapCheckboxChange(student.student_id, event.event_id, $event)">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="form-group form-check">
+    <ng-scrollbar class="custom-scrollbar">
+      <div class="table-scroll">
+        <table class="table tableFixHead">
+          <thead>
+            <tr class="text-uppercase table-dark">
+              <th  scope="col">Student Name</th>
+              <th class="text-center" scope="col" *ngFor="let event of filteredEvents">{{ event.event_name }}</th>
+            </tr>
+          </thead>
+          <tbody class="data-body-grid">
+            <tr  class="table-info" *ngFor="let student of filteredStudents">
+              <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
+              <td class="text-center" *ngFor="let event of filteredEvents">
+                  <input class="form-check-input text-center td-checkbox" [checked]="mapCheckboxCheckedProperty(student.student_id, event.event_id)" type="checkbox" (change)="onMapCheckboxChange(student.student_id, event.event_id, $event)">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-scrollbar>
+    <div class="form-group form-check mt-4">
+      <fa-icon [icon]="faHandPointRight"></fa-icon>
       <input type="checkbox" class="form-check-input td-checkbox" [checked]="updateConfirmCheckFlag" (change)="onConfirmCheckboxChange()" id="updateConfirmCheck">
       <label class="form-check-label text-info" for="updateConfirmCheck">
         I understand that I am registering my students for
@@ -54,11 +59,12 @@
       </label>
     </div>
     <span >
-      <button tooltip="Confirm the above checkbox to Enable Button" placement="right" triggers="pointerenter:pointerout" type="submit" class="btn btn-success" [disabled]="!updateConfirmCheckFlag || loading" >
+      <button tooltip="Confirm the above checkbox to Enable Button" placement="right" triggers="pointerenter:pointerout" type="submit" class="btn btn-success ml-5" [disabled]="!updateConfirmCheckFlag || loading" >
         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
         <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Events
       </button>
     </span>
+
   </form>
 
 </div>

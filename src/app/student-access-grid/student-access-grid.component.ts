@@ -1,24 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faHandPointRight } from '@fortawesome/free-solid-svg-icons';
 import { first } from 'rxjs/operators';
 import { Students } from '../models/students';
 import { AccountService } from '../services/account.service';
 import { AlertService } from '../services/alert.service';
-
 
 @Component({
   selector: 'app-student-access-grid',
   templateUrl: './student-access-grid.component.html',
   styleUrls: ['./student-access-grid.component.css']
 })
+
 export class StudentAccessGridComponent implements OnInit {
 
   faCloudUploadAlt = faCloudUploadAlt;
-  students:Students[];
+  faHandPointRight = faHandPointRight;
+  updateConfirmCheckFlag = false;
+  students: any[];
+  updateRecordsToDB: any[] = [];
   loading = false;
-  isDirtyFlag = false;
+  submitted = false;
   dbOutput: any;
+  compact:boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -26,52 +30,130 @@ export class StudentAccessGridComponent implements OnInit {
     private router: Router,
   ) {
     this.students = this.accountService.fellowValue.students;
+    //Add and update flag as none for all students
+    this.setNoneFlagForAllStudents();
    }
 
   ngOnInit(): void {
+
   }
 
-  changeAccessCheckbox(i) {
-    this.isDirtyFlag = true;
-    if (this.students) {
-      var check = !this.students[i].access;
-      this.students[i].access = check;
-      this.updateLocalStorage(this.students, i, check);
+  setNoneFlagForAllStudents(){
+    //Add a flag field to the studentEventMap
+    this.students.forEach((student) => {
+      student.flag = "none";
+    })
+  }
+
+  updateFlag(studentId: number) {
+
+    // Find index of student when there is a change in checkbox
+    var stuIndex = this.students.findIndex(x => {
+      return x.student_id == studentId
+    });
+
+    if(stuIndex!=-1){
+      if(this.students[stuIndex].flag=="none"){
+        this.students[stuIndex].flag="update";
+      }
+    }
+    else{
+      this.alertService.error("Invalid Student Record");
     }
   }
 
-  updateLocalStorage(students: Students[], i: number, check: boolean){
+  updateLocalStorage(){
     // const user = { ...this.userValue, ...params };
     var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
-    fellowFromLocalStorage.students[i].access = check;
+    this.updateRecordsToDB.forEach(element => {
+      // Find index of student in Local Storage, where there is a change
+      var stuIndex = fellowFromLocalStorage.students.findIndex(x => {
+        return x.student_id == element.student_id
+      });
+      //Update record in local variable
+      if(stuIndex!=-1){
+        fellowFromLocalStorage.students[stuIndex].access = element.access;
+        fellowFromLocalStorage.students[stuIndex].phone_number = element.phone_number;
+      }
+      else{
+        this.alertService.error("Invalid Student Record");
+        return;
+      }
+    })
+    //Assign local variable to Local Storage
     localStorage.setItem("fellow",JSON.stringify(fellowFromLocalStorage));
   }
 
   onAccessFormSubmit(){
 
-    this.loading = true;
     // reset alerts on submit
     this.alertService.clear();
 
-    this.accountService.updateStudentAccess()
+    this.loading = true;
+
+    //Push records that needs to be updated
+    this.students.forEach(element => {
+      if(element.flag=="update"){
+        this.updateRecordsToDB.push(
+          Object.assign({}, element)
+        )
+      }
+    });
+
+    //Stop here if phone numbers is invalid in records to be updated to DB
+    var phoneInvalidFlag = 0;
+    this.updateRecordsToDB.forEach(element =>{
+      if(!(element.phone_number==null)){
+        if(!(element.phone_number.length==10)){
+          phoneInvalidFlag = 1;
+        }
+      }
+    })
+    if(phoneInvalidFlag) {
+      this.alertService.error('Error in Phone Number Fields');
+      this.updateRecordsToDB = [];
+      this.loading = false;
+      window.scroll(0,0);
+      return;
+    }
+
+    //Remove flag property as it is unnecessary
+    this.updateRecordsToDB.filter(x=>{
+      delete x.flag;
+      return true;
+     });
+
+    if(!(this.updateRecordsToDB.length==0)){ //Dont call DB if both updateRecordsToDB array is empty
+      this.accountService.updateStudentAccess(this.updateRecordsToDB)
       .pipe(first())
       .subscribe(
           data => {
             this.dbOutput = data;
             this.alertService.success(this.dbOutput.message);
-            this.loading = false;
-            this.isDirtyFlag = false;
-            this.router.navigate(['/']);
+            this.updateLocalStorage();
           },
           error => {
               this.alertService.error(error);
-              this.loading = false;
-              this.isDirtyFlag = false;
           },
           () => { //Operations to be done at final (no matter data or error)
+            this.updateRecordsToDB = [];
+            this.students = [];
+            var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+            this.students = fellowFromLocalStorage.students;
+            this.setNoneFlagForAllStudents();
+            this.updateConfirmCheckFlag = false;
+            this.loading = false;
             window.scroll(0,0);
           }
       );
+    }
+    else{
+      this.alertService.error("No Change Detected. No Records Updated");
+      this.updateConfirmCheckFlag = false;
+      this.loading = false;
+      window.scroll(0,0);
+    }
+
   }
 
 }

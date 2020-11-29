@@ -7,7 +7,47 @@ html {
 }
 body {
   /* Margin bottom by footer height + 15px, set the footer size to 60px in the footer css */
-  margin-bottom: 75px;
+  margin-bottom: 100px;
 }
 
+/* Override default 'x' to '✓' in checkbox element. Also some aesthetic changes  */
+[type=checkbox]:checked::after {
+  content: "✓";
+  position: absolute;
+  left: -0.8em;
+  top: -.6em;
+  font-size: 1.5rem;
+  font-weight: bolder;
+  line-height: .5;
+  color: #34328f;
+}
+
+/* Default setting for table */
+.data-body-grid>tr:nth-child(odd)>td, .data-body-grid>tr:nth-child(odd)>th {
+  background-color: #ffeeba; /* text-warning color */
+}
+.table-scroll {
+  /* overflow-y: auto; */
+  max-height: 400px;
+  /* margin-top: -5px; */
+}
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4000;
+}
+
+/* Default scrollbar styles */
+
+/* .custom-scrollbar {
+  --scrollbar-color: rgb(255, 1, 1);
+  --scrollbar-container-color: rgb(66, 51, 207);
+  --scrollbar-thumb-color: rgba(29, 9, 9, 0.815);
+  --scrollbar-thumb-hover-color: rgb(0, 0, 0);
+  --scrollbar-border-radius: 10px;
+  --scrollbar-size: 10px;
+  --scrollbar-padding: 8px;
+  --scroll-view-margin: 0;
+  --scroll-view-color: rgb(255, 1, 1);
+} */
 

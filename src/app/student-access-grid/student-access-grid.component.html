@@ -1,24 +1,47 @@
 <div class="container">
     <form (submit)="onAccessFormSubmit()">
-      <table class="table">
-        <thead>
-          <tr class="text-uppercase">
-            <th scope="col">Student Name</th>
-            <th scope="col" class="text-center">Access To Internet</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let student of students; let i = index;">
-            <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
-            <td class="text-center">
-              <input class="form-check-input td-checkbox" type="checkbox"
-              (change)="changeAccessCheckbox(i)"
-              [checked]="student.access">
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <button type="submit" class="btn btn-warning text-primary" [disabled]="!isDirtyFlag || loading">
+      <ng-scrollbar class="custom-scrollbar">
+        <div class="table-scroll">
+          <table class="table tableFixHead">
+            <thead>
+              <tr class="text-uppercase table-dark">
+                <th scope="col">Student Name</th>
+                <th scope="col" class="text-center">Access To Internet</th>
+                <th scope="col" class="text-center">Phone Number</th>
+              </tr>
+            </thead>
+            <tbody class="data-body-grid">
+              <tr class="table-info" *ngFor="let student of students; let i = index;">
+                <th scope="row" class="text-uppercase">{{ student.student_name }}</th>
+                <td class="text-center">
+                  <input class="form-check-input td-checkbox" type="checkbox"
+                  (change)="updateFlag(student.student_id)"
+                  [(ngModel)]="student.access" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td class="text-center">
+                  <input class="form-text-input" type="text" size="12"
+                  (change)="updateFlag(student.student_id)"
+                  [(ngModel)]="student.phone_number" [ngModelOptions]="{standalone: true}">
+                  <div *ngIf="student.phone_number==null? 0 : student.phone_number.length==10? 0:1"
+                   class="text-danger font-italic">
+                    Should be either Empty or 10 characters
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </ng-scrollbar>
+      <div class="form-group form-check mt-4">
+        <fa-icon [icon]="faHandPointRight"></fa-icon>
+        <input type="checkbox" class="form-check-input td-checkbox" [checked]="updateConfirmCheckFlag" (change)="this.updateConfirmCheckFlag = !this.updateConfirmCheckFlag" id="updateConfirmCheck">
+        <label class="form-check-label text-info" for="updateConfirmCheck">
+          I understand that all visible
+          <span class="badge badge-info badge-pill">&nbsp;&nbsp;Access and Phone Number&nbsp;&nbsp;</span> changes will be updated.
+        </label>
+      </div>
+      <button type="submit" class="btn btn-warning text-primary ml-5" [disabled]="!updateConfirmCheckFlag || loading">
         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
         <fa-icon [icon]="faCloudUploadAlt"></fa-icon>&nbsp;&nbsp;Update Student Access
       </button>

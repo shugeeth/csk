@@ -186,30 +186,28 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
     // reset alerts on submit
     this.alertService.clear();
 
-    // var insertRows = Object.assign({},this.studentEventMap);
-    // var deleteRows = Object.assign({},this.studentEventMap);
-
+    //Adding seperately records that needs to be inserted and deleted
     this.studentEventMap.forEach(element => {
-      this.insertRows.push(
-        Object.assign({}, element)
-      )
-      this.deleteRows.push(
-        Object.assign({}, element)
-      )
+      if(element.flag=="insert"){
+        this.insertRows.push(
+          Object.assign({}, element)
+        )
+      }
+      else if(element.flag=="delete"){
+        this.deleteRows.push(
+          Object.assign({}, element)
+        )
+      }
     });
 
-    //Preparing data to insert and delete in DB
-    this.insertRows = this.insertRows.filter(x=>x.flag=="insert");
-    this.deleteRows = this.deleteRows.filter(x=>x.flag=="delete");
-
     //Removing unnecessary attributes for db update
-    this.insertRows = this.insertRows.filter(x=>{
+    this.insertRows.filter(x=>{
                       delete x.week;
                       delete x.mode;
                       delete x.flag;
                       return true;
                      });
-    this.deleteRows = this.deleteRows.filter(x=>{
+    this.deleteRows.filter(x=>{
                       delete x.week;
                       delete x.mode;
                       delete x.flag;
@@ -234,22 +232,23 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
             this.ngAfterViewChecked();
             this.dbOutput = data;
             this.alertService.success(this.dbOutput.message);
-            this.loading = false;
           },
           error => {
             this.alertService.error(error);
-            this.loading = false;
           },
           () => { //Operations to be done at final (no matter data or error)
             this.insertRows=[];
             this.deleteRows=[];
             this.onConfirmCheckboxChange();
+            this.updateConfirmCheckFlag = false;
+            this.loading = false;
             window.scroll(0,0);
           }
       );
     }
     else{
       this.alertService.error("No Change Detected. No Records Updated");
+      this.updateConfirmCheckFlag = false;
       this.loading = false;
       window.scroll(0,0);
     }
