@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppBootstrapModule } from './app-bootstrap/app-bootstrap.module';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FooterComponent } from './footer/footer.component';
@@ -42,7 +41,6 @@ import { StudentAccessGridComponent } from './student-access-grid/student-access
     FontAwesomeModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgScrollbarModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

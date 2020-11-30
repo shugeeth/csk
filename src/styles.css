@@ -27,7 +27,7 @@ body {
   background-color: #ffeeba; /* text-warning color */
 }
 .table-scroll {
-  /* overflow-y: auto; */
+  overflow-y: auto;
   max-height: 400px;
   /* margin-top: -5px; */
 }
@@ -39,15 +39,25 @@ body {
 
 /* Default scrollbar styles */
 
-/* .custom-scrollbar {
-  --scrollbar-color: rgb(255, 1, 1);
-  --scrollbar-container-color: rgb(66, 51, 207);
-  --scrollbar-thumb-color: rgba(29, 9, 9, 0.815);
-  --scrollbar-thumb-hover-color: rgb(0, 0, 0);
-  --scrollbar-border-radius: 10px;
-  --scrollbar-size: 10px;
-  --scrollbar-padding: 8px;
-  --scroll-view-margin: 0;
-  --scroll-view-color: rgb(255, 1, 1);
-} */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  /* border-radius: 10px; */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background:#096b7a;
+  /* border-radius: 10px; */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background:#555555;
+}
 

@@ -7,14 +7,17 @@
 .badge.badge-info{
   font-size: medium;
 }
-.custom-scrollbar {
-  --scrollbar-color: rgb(255, 1, 1);
-  --scrollbar-container-color: rgb(66, 51, 207);
-  --scrollbar-thumb-color: rgba(29, 9, 9, 0.815);
-  --scrollbar-thumb-hover-color: rgb(0, 0, 0);
-  --scrollbar-border-radius: 10px;
-  --scrollbar-size: 10px;
-  --scrollbar-padding: 8px;
-  --scroll-view-margin: 0;
-  --scroll-view-color: rgb(255, 1, 1);
+
+/* Custom scrollbar styles */
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background:#17a2b8;
+  border-radius: 10px;
 }
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background:#096b7a;
+}
+

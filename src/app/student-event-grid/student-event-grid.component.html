@@ -30,7 +30,6 @@
     <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For {{ this.selectedMode }} Mode - All students can participate in a maximum of 3 OFFLINE events.</span>
   </div>
   <form (submit)="onStuEventFormSubmit()">
-    <ng-scrollbar class="custom-scrollbar">
       <div class="table-scroll">
         <table class="table tableFixHead">
           <thead>
@@ -49,7 +48,6 @@
           </tbody>
         </table>
       </div>
-    </ng-scrollbar>
     <div class="form-group form-check mt-4">
       <fa-icon [icon]="faHandPointRight"></fa-icon>
       <input type="checkbox" class="form-check-input td-checkbox" [checked]="updateConfirmCheckFlag" (change)="onConfirmCheckboxChange()" id="updateConfirmCheck">

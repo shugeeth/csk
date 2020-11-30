@@ -1,6 +1,5 @@
 <div class="container">
     <form (submit)="onAccessFormSubmit()">
-      <ng-scrollbar class="custom-scrollbar">
         <div class="table-scroll">
           <table class="table tableFixHead">
             <thead>
@@ -31,9 +30,7 @@
               </tr>
             </tbody>
           </table>
-
         </div>
-      </ng-scrollbar>
       <div class="form-group form-check mt-4">
         <fa-icon [icon]="faHandPointRight"></fa-icon>
         <input type="checkbox" class="form-check-input td-checkbox" [checked]="updateConfirmCheckFlag" (change)="this.updateConfirmCheckFlag = !this.updateConfirmCheckFlag" id="updateConfirmCheck">
