@@ -33,10 +33,9 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
   deleteRows: any[];
 
   weeks = [
-    { display: "Week 1", value: "28-11-2020" },
-    { display: "Week 2", value:"05-12-2020" },
-    { display: "Week 3",value:"12-12-2020" },
-    { display: "Week 4" ,value:"19-12-2020"}
+    { display: "Week 1 - Day 1", value: "12-12-2020" },
+    { display: "Week 2 - Day 1", value:"19-12-2020" },
+    { display: "Week 2 - Day 2",value:"20-12-2020" }
   ];
 
   modes = [
@@ -54,7 +53,7 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
     this.fellow = this.accountService.fellowValue;
     this.events = this.fellow.events;
     this.selectedMode = "ONLINE";
-    this.selectedWeek = "28-11-2020";
+    this.selectedWeek = "12-12-2020";
     this.getStudentsFiltered();
     this.getEventsFiltered();
     this.studentEventMap = this.accountService.fellowValue.students_events_map;

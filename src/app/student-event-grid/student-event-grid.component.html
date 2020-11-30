@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-4">
       <div class="form-group">
-        <label for="selectWeek" class="badge badge-info badge-pill">&nbsp;&nbsp;Selected Week - {{ selectedWeek }}&nbsp;&nbsp;</label>
+        <label for="selectWeek" class="badge badge-info badge-pill">&nbsp;&nbsp;Selected Date - {{ selectedWeek }}&nbsp;&nbsp;</label>
         <select class="form-control" id="selectWeek" (change)="onWeekChange()"
         [(ngModel)]="selectedWeek" [ngModelOptions]="{standalone: true}">
           <option *ngFor="let week of weeks" [ngValue]="week.value">{{ week.display }}</option>
@@ -27,7 +27,7 @@
     <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For {{ this.selectedMode }} Mode - Please ensure that for students who have access to internet, you can register for 1 CONFERENCE CALL event and for students who don't have access to internet, you can register for 2 CONFERENCE CALL events</span>
   </div>
   <div class="col-12 mb-3" *ngIf="selectedMode=='OFFLINE'">
-    <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For {{ this.selectedMode }} Mode - All students can participate in a maximum of 2 OFFLINE events.</span>
+    <span class="font-italic text-info"><fa-icon [icon]="faHandPointRight"></fa-icon>	 For {{ this.selectedMode }} Mode - All students can participate in a maximum of 3 OFFLINE events.</span>
   </div>
   <form (submit)="onStuEventFormSubmit()">
     <ng-scrollbar class="custom-scrollbar">
