@@ -16,6 +16,8 @@ export class StudentAccessGridComponent implements OnInit {
 
   faCloudUploadAlt = faCloudUploadAlt;
   faHandPointRight = faHandPointRight;
+  //Regex to have phone number empty, null or 10 digits only. \\d is used as it is matching a string
+  phonePattern = new RegExp("^(\\d{10}|\\d{0}|null)$");
   updateConfirmCheckFlag = false;
   students: any[];
   updateRecordsToDB: any[] = [];
@@ -45,8 +47,11 @@ export class StudentAccessGridComponent implements OnInit {
     })
   }
 
-  updateFlag(studentId: number) {
+  checkForPattern(x): boolean{
+    return this.phonePattern.test(x);
+  }
 
+  updateFlag(studentId: number) {
     // Find index of student when there is a change in checkbox
     var stuIndex = this.students.findIndex(x => {
       return x.student_id == studentId
@@ -103,10 +108,13 @@ export class StudentAccessGridComponent implements OnInit {
     //Stop here if phone numbers is invalid in records to be updated to DB
     var phoneInvalidFlag = 0;
     this.updateRecordsToDB.forEach(element =>{
-      if(!(element.phone_number==null)){
-        if(!(element.phone_number.length==10)){
-          phoneInvalidFlag = 1;
+      if(this.checkForPattern(element.phone_number)){
+        if(element.phone_number==""){ //Change phone_number to null if it is empty
+          element.phone_number=null;
         }
+      }
+      else{
+        phoneInvalidFlag = 1;
       }
     })
     if(phoneInvalidFlag) {
