@@ -200,18 +200,18 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
     });
 
     //Removing unnecessary attributes for db update
-    this.insertRows.filter(x=>{
-                      delete x.week;
-                      delete x.mode;
-                      delete x.flag;
-                      return true;
-                     });
-    this.deleteRows.filter(x=>{
-                      delete x.week;
-                      delete x.mode;
-                      delete x.flag;
-                      return true;
-                     });
+    this.insertRows = this.insertRows.filter(x=>{
+                        delete x.week;
+                        delete x.mode;
+                        delete x.flag;
+                        return true;
+                      });
+    this.deleteRows = this.deleteRows.filter(x=>{
+                        delete x.week;
+                        delete x.mode;
+                        delete x.flag;
+                        return true;
+                      });
 
     if(!(this.insertRows.length==0 && this.deleteRows.length==0)){ //Dont call DB if both insert and delete arrays are empty
       this.accountService.updateStudentsEvents( this.insertRows, this.deleteRows)

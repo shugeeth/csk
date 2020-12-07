@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://hill-strong-dogwood.glitch.me'
+  apiUrl: 'https://csk7v-2020-api.herokuapp.com'
 };

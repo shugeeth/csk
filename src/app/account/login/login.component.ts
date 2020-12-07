@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
               this.router.navigate([this.returnUrl]);
           },
           error => {
-            if(error=="Unauthorized"){
+            if(error=="Unauthorized" || error=="OK"){
               error = "Username or Password is Incorrect"
             }
             this.alertService.error(error);

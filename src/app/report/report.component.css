@@ -1,0 +1,28 @@
+li.event-list{
+  list-style-type:none;
+}
+ul.event-list{
+  margin: 0;
+  padding: 0;
+}
+.badge.badge-warning{
+  font-size:medium;
+}
+.controls{
+  background-color: rgb(187, 186, 226);
+  box-shadow: 5px 5px #555555;
+  border-radius: 5px;
+}
+.my-switch:focus {
+  outline-style: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+.card-header{
+  font-size: large;
+}
+.card:hover{
+  box-shadow: 5px 5px #555555;
+  background-color: #ffc107;
+  cursor: context-menu;
+}

@@ -126,10 +126,10 @@ export class StudentAccessGridComponent implements OnInit {
     }
 
     //Remove flag property as it is unnecessary
-    this.updateRecordsToDB.filter(x=>{
-      delete x.flag;
-      return true;
-     });
+    this.updateRecordsToDB = this.updateRecordsToDB.filter(x=>{
+                                delete x.flag;
+                                return true;
+                              });
 
     if(!(this.updateRecordsToDB.length==0)){ //Dont call DB if both updateRecordsToDB array is empty
       this.accountService.updateStudentAccess(this.updateRecordsToDB)

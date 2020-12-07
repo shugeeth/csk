@@ -1,7 +1,49 @@
-<div class="col-md-6 offset-md-3 mt-5">
-  <p class="font-italic text-center">
+<div class="container mt-5">
+  <h4>Welcome {{ fellow.first_name }}  {{ fellow.last_name}}!
+    <span style="float: right;">{{ fellow.school_name }}</span>
+  </h4>
+  <hr>
+  <!-- <p class="font-italic text-center">
     <span class="text-danger">&hearts;&hearts;&hearts;</span>
     &nbsp; Your reports are under construction. Give us sometime &nbsp;&nbsp;
     <span class="text-danger">&hearts;&hearts;&hearts;</span>
-  </p>
+  </p> -->
+  <h4 class="my-4">Students Event List</h4>
+  <div class="controls container p-5 mt-3 mb-5 col-12">
+    <div class="font-weight-bolder text-uppercase mb-4" style="font-size: 1.2rem;">Control Panel</div>
+    <div class="row">
+      <div class="col-6 mb-3">
+        <input type="text" class="form-control" placeholder="Search by Student Name" (input)="updateFilteredStudents()" [(ngModel)]='filterStudentName'>
+      </div>
+      <div class="col-6 mb-3">
+        <input type="text" class="form-control" placeholder="Search by Event Name" (input)="updateFilteredStudents()" [(ngModel)]='filterEventName'>
+      </div>
+      <div class="col-12 my-auto">
+        <ui-switch [(ngModel)]='filterRemoveNoEvents' (change)="onControlsRemoveNoEventsChange($event)" class="my-switch ml-2"></ui-switch>&nbsp;<span class="" style="vertical-align: bottom;font-size: 0.9rem;">Remove students with "No Events"</span>
+      </div>
+    </div>
+  </div>
+  <div class="row card-group">
+    <div class="col-4" *ngFor = "let student of studentFilteredReports">
+      <div class="card border-warning mb-3">
+        <div class="card-header bg-info text-white">
+          {{ student.student_name }}
+          <span class="badge badge-warning text-dark badge-pill float-right">{{ student.student_id }}</span>
+        </div>
+        <div class="card-body">
+          <ul class="event-list" *ngIf="student.events.length===0">
+            <li class="event-list text-dark border-warning" >
+              No Events
+            </li>
+          </ul>
+          <ul class="event-list" *ngIf="!(student.events.length===0)">
+            <li class="event-list text-dark border-warning" *ngFor="let event of student.events">
+              {{ event.event_date }} - {{ event.event_name }} - {{ event.mode }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

@@ -19,6 +19,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ReportComponent } from './report/report.component';
 import { AlertComponent } from './_components/alert/alert.component';
 import { StudentAccessGridComponent } from './student-access-grid/student-access-grid.component';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,15 @@ import { StudentAccessGridComponent } from './student-access-grid/student-access
     FontAwesomeModule,
     ReactiveFormsModule,
     HttpClientModule,
+    UiSwitchModule.forRoot({
+      size: 'small',
+      color: '#17A2B8',
+      switchColor: '#ffc107',
+      defaultBgColor: '#DC3545',
+      defaultBoColor : '#000000',
+      checkedLabel: 'ON',
+      uncheckedLabel: 'OFF'
+    }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
