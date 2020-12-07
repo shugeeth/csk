@@ -193,6 +193,9 @@ SOFTWARE.
 
 
 
+ngx-ui-switch
+MIT
+
 rxjs
 Apache-2.0
                                Apache License
