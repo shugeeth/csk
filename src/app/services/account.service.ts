@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -12,6 +12,13 @@ export class AccountService {
 
   private fellowSubject: BehaviorSubject<Fellow>;
   public fellow: Observable<Fellow>;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Access-Control-Allow-Origin':'*',
+      'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers':'Content-Type, Authorization, Content-Length, X-Requested-With'
+    })
+  };
 
   constructor(
       private router: Router,

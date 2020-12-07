@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { element } from 'protractor';
-import { Events } from '../models/events';
 import { Fellow } from '../models/fellow';
-import { StudentsEventsMap } from '../models/students_events_map';
 import { FellowStudentsReport } from '../models/student_report';
 import { AccountService } from '../services/account.service';
 
@@ -24,9 +21,6 @@ export class ReportComponent implements OnInit {
     this.fellow = JSON.parse(localStorage.getItem("fellow"));
     this.initializeData();
     this.copyReportData();
-    this.filterStudentName = '';
-    this.filterEventName = '';
-    this.filterRemoveNoEvents = false;
    }
 
   ngOnInit(): void {
@@ -74,7 +68,16 @@ export class ReportComponent implements OnInit {
   }
 
   onControlsRemoveNoEventsChange(event: boolean){
-    if(event){
+
+  }
+
+  updateFilteredStudents(){
+
+    console.log(this.filterStudentName)
+    console.log(this.filterEventName)
+    console.log(this.filterRemoveNoEvents)
+
+    if(!this.filterRemoveNoEvents){
       this.studentFilteredReports = this.studentReports.filter( record => {
         return !(record.events.length == 0)
       })
@@ -82,12 +85,7 @@ export class ReportComponent implements OnInit {
     else{
       this.studentFilteredReports = this.studentReports;
     }
-  }
 
-  updateFilteredStudents(){
-    console.log(this.filterStudentName)
-    console.log(this.filterEventName)
-    console.log(this.filterRemoveNoEvents)
   }
 
 }
