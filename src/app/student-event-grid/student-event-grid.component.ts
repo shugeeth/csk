@@ -224,26 +224,32 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
             this.studentEventMap = [];
             var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
             this.studentEventMap = fellowFromLocalStorage.students_events_map;
-            // JSON.parse(localStorage.getItem("fellow")).forEach(element => {
-            //   this.studentEventMap.push(
-            //     Object.assign({}, element)
-            //   )
-            // });
             this.setNoneFlagForAllSEMap();
             this.ngAfterViewChecked();
             this.dbOutput = data;
             this.alertService.success(this.dbOutput.message);
-          },
-          error => {
-            this.alertService.error(error);
-          },
-          () => { //Operations to be done at final (no matter data or error)
+
+            //Finally
             this.insertRows=[];
             this.deleteRows=[];
             this.onConfirmCheckboxChange();
             this.updateConfirmCheckFlag = false;
             this.loading = false;
             window.scroll(0,0);
+          },
+          error => {
+            this.alertService.error(error);
+
+            //Finally
+            this.insertRows=[];
+            this.deleteRows=[];
+            this.onConfirmCheckboxChange();
+            this.updateConfirmCheckFlag = false;
+            this.loading = false;
+            window.scroll(0,0);
+          },
+          () => { //Operations to be done at final (no matter data or error)
+
           }
       );
     }

@@ -141,11 +141,8 @@ export class StudentAccessGridComponent implements OnInit {
             this.dbOutput = data;
             this.alertService.success(this.dbOutput.message);
             this.updateLocalStorage();
-          },
-          error => {
-              this.alertService.error(error);
-          },
-          () => { //Operations to be done at final (no matter data or error)
+
+            //Finally
             this.updateRecordsToDB = [];
             this.students = [];
             var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
@@ -154,6 +151,24 @@ export class StudentAccessGridComponent implements OnInit {
             this.updateConfirmCheckFlag = false;
             this.loading = false;
             window.scroll(0,0);
+
+          },
+          error => {
+              this.alertService.error(error);
+
+              //Finally
+            this.updateRecordsToDB = [];
+            this.students = [];
+            var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+            this.students = fellowFromLocalStorage.students;
+            this.setNoneFlagForAllStudents();
+            this.updateConfirmCheckFlag = false;
+            this.loading = false;
+            window.scroll(0,0);
+
+          },
+          () => { //Operations to be done at final (no matter data or error)
+
           }
       );
     }
