@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000'
+  apiUrl: 'https://csk7v-2020-api.herokuapp.com'
 };
+// localhost - 'http://localhost:3000'
+// heroku - https://csk7v-2020-api.herokuapp.com
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

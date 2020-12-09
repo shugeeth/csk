@@ -31,7 +31,9 @@ export class StudentAccessGridComponent implements OnInit {
     private alertService: AlertService,
     private router: Router,
   ) {
-    this.students = this.accountService.fellowValue.students;
+    var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+    this.students = fellowFromLocalStorage.students;
+    //this.students = this.accountService.fellowValue.students;
     //Add and update flag as none for all students
     this.setNoneFlagForAllStudents();
    }

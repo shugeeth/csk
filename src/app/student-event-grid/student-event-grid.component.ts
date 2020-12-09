@@ -56,7 +56,9 @@ export class StudentEventGridComponent implements OnInit, AfterViewChecked {
     this.selectedWeek = "12-12-2020";
     this.getStudentsFiltered();
     this.getEventsFiltered();
-    this.studentEventMap = this.accountService.fellowValue.students_events_map;
+    var fellowFromLocalStorage = JSON.parse(localStorage.getItem("fellow"));
+    //this.studentEventMap = this.accountService.fellowValue.students_events_map;
+    this.studentEventMap = fellowFromLocalStorage.students_events_map;
     //studentEventMap flag will initially be 'none'and will change to 'insert'/'delete' for update in localstorage and DB
     this.setNoneFlagForAllSEMap();
     this.insertRows=[];

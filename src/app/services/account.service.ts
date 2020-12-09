@@ -43,7 +43,7 @@ export class AccountService {
   }
 
   updateStudentAccess(students) {
-    return this.http.put(`${environment.apiUrl}/api/updateStudentAccess`, { students : students })
+    return this.http.post(`${environment.apiUrl}/api/updateStudentAccess`, { students : students })
         .pipe(map((res:any) => {
           return res;
         }), catchError(er=>{
@@ -52,7 +52,7 @@ export class AccountService {
   }
 
   updateStudentsEvents(insertRows, deleteRows) {
-    return this.http.put(`${environment.apiUrl}/api/updateStudentsEvents`, { insertRows : insertRows, deleteRows: deleteRows})
+    return this.http.post(`${environment.apiUrl}/api/updateStudentsEvents`, { insertRows : insertRows, deleteRows: deleteRows})
         .pipe(map((res:any) => {
           return res;
         }), catchError(er=>{

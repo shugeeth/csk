@@ -68,7 +68,14 @@ export class ReportComponent implements OnInit {
   }
 
   onControlsRemoveNoEventsChange(event: boolean){
-
+    if(event){
+      this.studentFilteredReports = this.studentReports.filter( record => {
+        return !(record.events.length == 0)
+      })
+    }
+    else{
+      this.studentFilteredReports = this.studentReports;
+    }
   }
 
   updateFilteredStudents(){
