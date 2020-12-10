@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Events } from '../models/events';
 import { Fellow } from '../models/fellow';
 import { FellowStudentsReport } from '../models/student_report';
 import { AccountService } from '../services/account.service';
@@ -13,9 +14,9 @@ export class ReportComponent implements OnInit {
   fellow: Fellow;
   studentReports: FellowStudentsReport[] = [];
   studentFilteredReports: FellowStudentsReport[] = [];
-  filterStudentName: string;
-  filterEventName: string;
-  filterRemoveNoEvents: boolean;
+  filterStudentName: string = '';
+  filterEventName: string = '';
+  filterRemoveNoEvents: boolean = false;
 
   constructor(private accountService: AccountService) {
     this.fellow = JSON.parse(localStorage.getItem("fellow"));
@@ -68,23 +69,14 @@ export class ReportComponent implements OnInit {
   }
 
   onControlsRemoveNoEventsChange(event: boolean){
-    if(event){
-      this.studentFilteredReports = this.studentReports.filter( record => {
-        return !(record.events.length == 0)
-      })
-    }
-    else{
-      this.studentFilteredReports = this.studentReports;
-    }
+    this.filterRemoveNoEvents = event;
+    this.updateFilteredStudents();
   }
 
   updateFilteredStudents(){
 
-    console.log(this.filterStudentName)
-    console.log(this.filterEventName)
-    console.log(this.filterRemoveNoEvents)
-
-    if(!this.filterRemoveNoEvents){
+    //Filter events by removeNoEvents Checkbox
+    if(this.filterRemoveNoEvents){
       this.studentFilteredReports = this.studentReports.filter( record => {
         return !(record.events.length == 0)
       })
@@ -92,6 +84,48 @@ export class ReportComponent implements OnInit {
     else{
       this.studentFilteredReports = this.studentReports;
     }
+
+    //Filter for Student Name and Event Name
+    this.studentFilteredReports = this.studentFilteredReports.filter( record => {
+
+      var lowercaseStudentName = record.student_name.toLowerCase();
+
+      //Check whether the given string is the event_name in any object in the array
+      var elementExists = function(arr: Events[], value: string){
+
+        var eveIndex = arr.findIndex( (x) => {
+          var lowercaseEventName = x.event_name.toLowerCase();
+          return lowercaseEventName.includes(value)
+        });
+
+        if(eveIndex === -1){
+          return 0;
+        }
+        else{
+          return 1;
+        }
+
+      };
+
+      //Check for empty strings in student and event name and send results accordingly
+      if(this.filterEventName == '' && this.filterStudentName == ''){
+        return 1 //Send all records
+      }
+      else if(!(this.filterEventName == '' || this.filterStudentName == '')){
+        //Check for both student and event name
+        return lowercaseStudentName.includes(this.filterStudentName.toLowerCase()) ||
+             elementExists(record.events, this.filterEventName.toLowerCase())
+      }
+      else if(this.filterEventName == ''){
+        //Check only for student name
+        return lowercaseStudentName.includes(this.filterStudentName.toLowerCase())
+      }
+      else if(this.filterStudentName == ''){
+        //Check only for event name
+        return elementExists(record.events, this.filterEventName.toLowerCase())
+      }
+
+    })
 
   }
 

@@ -13,13 +13,13 @@
     <div class="font-weight-bolder text-uppercase mb-4" style="font-size: 1.2rem;">Control Panel</div>
     <div class="row">
       <div class="col-6 mb-3">
-        <input type="text" class="form-control" placeholder="Search by Student Name" (input)="updateFilteredStudents()" [(ngModel)]='filterStudentName'>
+        <input type="text" class="form-control search" placeholder="Search by Student Name" (input)="updateFilteredStudents()" [(ngModel)]='filterStudentName'>
       </div>
       <div class="col-6 mb-3">
-        <input type="text" class="form-control" placeholder="Search by Event Name" (input)="updateFilteredStudents()" [(ngModel)]='filterEventName'>
+        <input type="text" class="form-control search" placeholder="Search by Event Name" (input)="updateFilteredStudents()" [(ngModel)]='filterEventName'>
       </div>
       <div class="col-12 my-auto">
-        <ui-switch [(ngModel)]='filterRemoveNoEvents' (change)="onControlsRemoveNoEventsChange($event)" class="my-switch ml-2"></ui-switch>&nbsp;<span class="" style="vertical-align: bottom;font-size: 0.9rem;">Remove students with "No Events"</span>
+        <ui-switch (change)="onControlsRemoveNoEventsChange($event)" class="my-switch ml-2"></ui-switch>&nbsp;<span class="" style="vertical-align: bottom;font-size: 0.9rem;">Remove students with "No Events"</span>
       </div>
     </div>
   </div>

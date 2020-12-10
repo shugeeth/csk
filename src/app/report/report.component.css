@@ -26,3 +26,6 @@ ul.event-list{
   background-color: #ffc107;
   cursor: context-menu;
 }
+input.search[type='text']{
+  text-transform: uppercase;
+}
